@@ -1,27 +1,31 @@
-name: Arnob Karmokar
-tagline: Electrical and Electronic Engineer
-career-objective: This is a GitHub Pages template for academic portfolio websites. Fork <a href="https://github.com/academicportfolio/academicportfolio.github.io">this repository</a> to get started. This section will be replaced by your career objective. Read the README of the repository to learn about customizing the site.
-color-theme: red # red or blue
+name: Francisco M. López
+tagline: PhD Candidate in Developmental AI </br> Frankfurt Institute for Advanced Studies
 avatar-filename: avatar.png # Change to your avatar's filename
-url: academicportfolio.github.io
+url: fcomlop.github.io
 baseurl: /
 paginate: 5
-paginate_path: "/blog/page:num/"
+paginate_path: "/projects/page:num/"
 
 # Social Information
 social:
   email: 
     visibility: true
-    mail: contact@arnob.me
+    mail: lopez@fias.uni-frankfurt.de
   github: 
     visibility: true
-    handle: arnobk
+    handle: fcomlop
   linkedin: 
     visibility: true
-    handle: arnobkarmokar
+    handle: fcomlop
   twitter: 
+    visibility: false
+    handle: fcomlop
+  scholar: 
     visibility: true
-    handle: arnobdotme
+    handle: pNDeaeQAAAAJ
+  orcid: 
+    visibility: true
+    handle: 0000-0002-9653-1740
 
 # Collections
 collections:
@@ -31,9 +35,6 @@ collections:
   education:
     output: false
     sort_by: order
-  projects:
-    output: true
-    sort_by: year
   skills:
     output: false
     sort_by: order
@@ -50,38 +51,17 @@ collections:
     output: false
     sort_by: year
 
-# About Page Options
-collection_option:
-  experience: 
-    label: Experience
-    visibility: true
-  education: 
-    label: Education
-    visibility: true
-  projects: 
-    label: Projects
-    visibility: true
-  skills: 
-    label: Technical Skills
-    visibility: true
-  publications: 
-    label: Publications
-    visibility: true
-  volunteerexperience: 
-    label: Volunteer Experience
-    visibility: true
-  certifications: 
-    label: Certifications
-    visibility: true
-  achievements: 
-    label: Achievements
-    visibility: true
-
 navigation:
 - title: About
   url: /
-- title: Blog
-  url: /blog/
+# - title: Projects
+#   url: /projects/
+- title: Publications
+  url: /publications
+- title: CV
+  url: assets/pdf/cv.pdf
+- title: Strands
+  url: /strands
 - title: Contact
   url: /contact
 
@@ -97,31 +77,24 @@ defaults:
       path: ''
       type: posts
     values:
-      permalink: /:categories/:year/:month/:title
+      permalink: /:year/:title
       layout: post
-      comments: true
-  - scope:
-      path: ''
-      type: projects
-    values:
-      permalink: /projects/:title
-      layout: project
       comments: false
-  - scope:
-      path: ''
-      type: publications
-    values:
-      permalink: /publications/:title
-      layout: publication
-      comments: false
+  # - scope:
+  #     path: ''
+  #     type: publications
+  #   values:
+  #     permalink: /publications/:title
+  #     layout: publication
+  #     comments: false
 
 # Disqus Comment
-disqus:
-  shortname: academic-portfolio # Change with your own disqus shortname
+#disqus:
+#  shortname: academic-portfolio # Change with your own disqus shortname
 
 # Contact Form
 formspree:
-  endpoint: https://formspree.io/f/xdorkgkv # Change with your own form's endpoint
+   endpoint: https://formspree.io/f/mzzrapob # Change with your own form's endpoint
 
 # Google Analytics
-google_analytics: UA—XXXXXXXX-X
+#google_analytics: UA—XXXXXXXX-X

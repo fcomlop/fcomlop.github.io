@@ -1,3 +1,15 @@
+This is the repository of the personal website of Francisco M. López, built using the [Academic Portfolio](https://academicportfolio.github.io/).
+
+To maintain it:
+- Projects: upload new projects to the _posts directory.
+- Publications: edit the `publications.md` file.
+- Updates: edit the `updates.md` file.
+- Strands: create a new board using [Strandstudio](https://strandstudio.thegoodboi.net/make) and export the board as a JSON file. Modify the title and author attributes as needed, and place it in the `assets/strands` directory. The games will be available at `https://fcomlop.github.io/strand.html?puzzle=assets/strands/puzzle-name.json`. Add a link to it in the  `strands.md` file. 
+
+Below is the original README of the Academic Portfolio template.
+
+---
+
 # Academic Portfolio
 
 A Github Pages template for academic portfolio websites.
@@ -22,7 +34,7 @@ avatar-filename: <yourFileName.jpg>
   - Publications: Add/modify the contents from **_publications** directory.
   - Certifications: Add/modify the contents from **_certifications** directory.
   - Achievements: Add/modify the contents from **_achievements** directory.
-9. To add/modify blog posts, modify the contents in **_posts** directory. Follow the given filename structure for blog post e.g. `YYYY-MM-DD-my-post-title.md`.
+9. To add/modify projects posts, modify the contents in **_posts** directory. Follow the given filename structure for projects post e.g. `YYYY-MM-DD-my-post-title.md`.
 10. After github pages deployment, your site will be available at `your-github-username.github.io`
 
 ## Enable Disqus Comments on Posts

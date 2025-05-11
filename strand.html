@@ -1,0 +1,318 @@
+---
+layout: game
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Strands Game</title>
+  <style>
+
+    h2 {
+      margin-bottom: 5px;
+    }
+
+    .grid {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(6, 50px);
+      grid-auto-rows: 50px;
+      gap: 5px;
+      justify-content: center;
+      margin: 20px auto;
+      touch-action: none;
+    }
+
+    .cell {
+      border: 1px solid #aaa;
+      background-color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      cursor: pointer;
+      user-select: none;
+      border-radius: 6px;
+      transition: background-color 0.2s;
+      position: relative;
+    }
+
+    .selected {
+      background-color: #bebebe;
+    }
+
+    .found {
+      background-color: #aedfee;
+      color: #333;
+      font-weight: bold;
+    }
+
+    .spangram {
+      background-color: #fbcb2c !important;
+    }
+
+    #counter {
+      font-weight: bold;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    #lastWord {
+      font-size: 18px;
+      margin: 15px 0;
+      min-height: 24px;
+      transition: opacity 0.4s;
+      text-align: center;
+    }
+
+    canvas#lineCanvas {
+      position: absolute;
+      pointer-events: none;
+      left: 0;
+      top: 0;
+      z-index: 0;
+    }
+
+    .confetti {
+      position: fixed;
+      left: 0;
+      top: 0;
+      pointer-events: none;
+      width: 100%;
+      height: 100%;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body>
+
+<h2 id="themeTitle">Strands</h2>
+<p id="authorName"></p>
+<p id="counter">Found: 0 / 0</p>
+<p id="lastWord"></p>
+
+<div class="grid" id="grid">
+  <canvas id="lineCanvas"></canvas>
+</div>
+
+<p>Need help? <a href="mailto:fcomlop@gmail.com">Contact me</a>.</p>
+
+<canvas class="confetti" id="confettiCanvas"></canvas>
+
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const puzzleFile = urlParams.get('puzzle') || '/assets/puzzles/test.json';
+
+  fetch(puzzleFile)
+    .then(res => res.json())
+    .then(data => {
+      const theme = data.theme;
+      const author = data.author;
+      const letters = data.letters;
+      let bonds = data.bonds;
+
+      document.getElementById('themeTitle').innerText = theme;
+      document.getElementById('authorName').innerText = `${author}`;
+
+      const grid = document.getElementById('grid');
+      const counterDisplay = document.getElementById('counter');
+      const lastWordDisplay = document.getElementById('lastWord');
+      const lineCanvas = document.getElementById('lineCanvas');
+      const ctx = lineCanvas.getContext('2d');
+      const totalWords = bonds.length;
+
+      // Normalize bonds
+      bonds = bonds.map(([word, rawPath, isSpangram]) => {
+        const path = rawPath.map(pos => {
+          const [x, y] = typeof pos === 'string' ? pos.split(',').map(Number) : pos;
+          const flippedY = letters.length - 1 - y;
+          return [x, flippedY];
+        });
+        return [word, path, isSpangram];
+      });
+
+      const selected = [];
+      const visited = new Set();
+      const cells = [];
+      let isDragging = false;
+      const foundWords = [];
+
+      function updateCounter() {
+        counterDisplay.textContent = `Found: ${foundWords.length} / ${totalWords}`;
+      }
+
+      function showLastWord(word) {
+        lastWordDisplay.textContent = word;
+        lastWordDisplay.style.opacity = 1;
+        setTimeout(() => {
+          lastWordDisplay.style.opacity = 0;
+        }, 2000);
+      }
+
+      function drawLines() {
+        ctx.clearRect(0, 0, lineCanvas.width, lineCanvas.height);
+        if (selected.length < 2) return;
+
+        ctx.strokeStyle = "#3399ff";
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+
+        selected.forEach((pos, i) => {
+          const cell = getCell(pos);
+          const rect = cell.getBoundingClientRect();
+          const x = rect.left + rect.width / 2 - grid.getBoundingClientRect().left;
+          const y = rect.top + rect.height / 2 - grid.getBoundingClientRect().top;
+
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+      }
+
+      function resizeCanvas() {
+        lineCanvas.width = grid.offsetWidth;
+        lineCanvas.height = grid.offsetHeight;
+      }
+
+      window.addEventListener("resize", resizeCanvas);
+      resizeCanvas();
+
+      function getCell(pos) {
+        return cells.find(c => c.dataset.pos === pos);
+      }
+
+      letters.forEach((row, y) => {
+        [...row].forEach((char, x) => {
+          const div = document.createElement('div');
+          div.className = 'cell';
+          div.textContent = char;
+          div.dataset.pos = `${y},${x}`;
+          grid.appendChild(div);
+          cells.push(div);
+
+          div.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            clearSelection();
+            isDragging = true;
+            selectCell(div);
+          });
+
+          div.addEventListener('mouseenter', () => {
+            if (isDragging) selectCell(div);
+          });
+
+          div.addEventListener('mouseup', () => {
+            if (isDragging) finalizeSelection();
+            isDragging = false;
+          });
+
+          div.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            clearSelection();
+            isDragging = true;
+            selectCell(div);
+          });
+
+          div.addEventListener('touchmove', (e) => {
+            const touch = e.touches[0];
+            const target = document.elementFromPoint(touch.clientX, touch.clientY);
+            if (target && target.classList.contains('cell')) {
+              selectCell(target);
+            }
+          });
+
+          div.addEventListener('touchend', () => {
+            if (isDragging) finalizeSelection();
+            isDragging = false;
+          });
+        });
+      });
+
+      document.addEventListener('mouseup', () => {
+        if (isDragging) {
+          finalizeSelection();
+          isDragging = false;
+        }
+      });
+
+      function selectCell(cell) {
+        const pos = cell.dataset.pos;
+        if (!visited.has(pos) && !cell.classList.contains('found')) {
+          cell.classList.add('selected');
+          visited.add(pos);
+          selected.push(pos);
+          drawLines();
+        }
+      }
+
+      function clearSelection() {
+        cells.forEach(c => c.classList.remove('selected'));
+        selected.length = 0;
+        visited.clear();
+        drawLines();
+      }
+
+      function finalizeSelection() {
+        const match = bonds.find(([word, path, isSpangram]) =>
+          path.map(([x, y]) => `${y},${x}`).join() === selected.join() &&
+          !foundWords.includes(word)
+        );
+
+        if (match) {
+          const [word, path, isSpangram] = match;
+          selected.forEach(pos => {
+            const cell = getCell(pos);
+            cell.classList.remove('selected');
+            cell.classList.add('found');
+            if (isSpangram) cell.classList.add('spangram');
+          });
+          foundWords.push(word);
+          showLastWord(word + (isSpangram ? " (Spangram!)" : ""));
+          updateCounter();
+          if (foundWords.length === totalWords) launchConfetti();
+        }
+
+        clearSelection();
+      }
+
+      // 🎉 Confetti animation
+      function launchConfetti() {
+        const canvas = document.getElementById("confettiCanvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const particles = [];
+
+        for (let i = 0; i < 100; i++) {
+          particles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * -canvas.height,
+            dx: (Math.random() - 0.5) * 4,
+            dy: Math.random() * 3 + 2,
+            color: `hsl(${Math.random() * 360}, 80%, 60%)`,
+            size: Math.random() * 6 + 2
+          });
+        }
+
+        const animate = () => {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          for (let p of particles) {
+            ctx.fillStyle = p.color;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fill();
+            p.x += p.dx;
+            p.y += p.dy;
+            if (p.y > canvas.height) p.y = -20;
+          }
+          requestAnimationFrame(animate);
+        };
+
+        animate();
+      }
+    });
+</script>
+
+</body>
+</html>
