@@ -96,13 +96,22 @@ layout: game
   <canvas id="lineCanvas"></canvas>
 </div>
 
-<p>Need help? <a href="mailto:fcomlop@gmail.com">Contact me</a>.</p>
+<p id="paperHint" style="margin-top: 15px; font-size: 16px;"></p>
 
 <canvas class="confetti" id="confettiCanvas"></canvas>
 
 <script>
   const urlParams = new URLSearchParams(window.location.search);
   const puzzleFile = urlParams.get('puzzle') || '/assets/puzzles/test.json';
+  const paperUrl = urlParams.get('paper');
+  if (paperUrl) {
+    document.getElementById('paperHint').innerHTML =
+      `Need a hint? <a href="${paperUrl}" target="_blank">Read the paper</a> or <a href="mailto:fcomlop@gmail.com">contact me.</a>`;
+  } else {
+    document.getElementById('paperHint').innerHTML =
+      `Need a hint? <a href="mailto:fcomlop@gmail.com">Contact me.</a>`;
+  }
+  
 
   fetch(puzzleFile)
     .then(res => res.json())
@@ -137,6 +146,8 @@ layout: game
       const cells = [];
       let isDragging = false;
       const foundWords = [];
+      const foundPaths = [];
+
 
       function updateCounter() {
         counterDisplay.textContent = `Found: ${foundWords.length} / ${totalWords}`;
@@ -152,31 +163,46 @@ layout: game
 
       function drawLines() {
         ctx.clearRect(0, 0, lineCanvas.width, lineCanvas.height);
-        if (selected.length < 2) return;
 
-        ctx.strokeStyle = "#3399ff";
-        ctx.lineWidth = 4;
-        ctx.beginPath();
+        const rect = grid.getBoundingClientRect();
 
-        selected.forEach((pos, i) => {
-          const cell = getCell(pos);
-          const rect = cell.getBoundingClientRect();
-          const x = rect.left + rect.width / 2 - grid.getBoundingClientRect().left;
-          const y = rect.top + rect.height / 2 - grid.getBoundingClientRect().top;
+        // Draw found word paths
+        for (const { path, color } of foundPaths) {
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 4;
+          ctx.beginPath();
+          path.forEach((pos, i) => {
+            const cell = getCell(pos);
+            const cellRect = cell.getBoundingClientRect();
+            const x = cellRect.left + cellRect.width / 2 - rect.left;
+            const y = cellRect.top + cellRect.height / 2 - rect.top;
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          });
+          ctx.stroke();
+        }
 
-          if (i === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
-        });
-        ctx.stroke();
+        // Draw current selection
+        if (selected.length >= 2) {
+          ctx.strokeStyle = "#bebebe";
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          selected.forEach((pos, i) => {
+            const cell = getCell(pos);
+            const cellRect = cell.getBoundingClientRect();
+            const x = cellRect.left + cellRect.width / 2 - rect.left;
+            const y = cellRect.top + cellRect.height / 2 - rect.top;
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          });
+          ctx.stroke();
+        }
       }
 
       function resizeCanvas() {
         lineCanvas.width = grid.offsetWidth;
         lineCanvas.height = grid.offsetHeight;
       }
-
-      window.addEventListener("resize", resizeCanvas);
-      resizeCanvas();
 
       function getCell(pos) {
         return cells.find(c => c.dataset.pos === pos);
@@ -229,6 +255,9 @@ layout: game
         });
       });
 
+      window.addEventListener("resize", resizeCanvas);
+      resizeCanvas();
+
       document.addEventListener('mouseup', () => {
         if (isDragging) {
           finalizeSelection();
@@ -261,17 +290,29 @@ layout: game
 
         if (match) {
           const [word, path, isSpangram] = match;
+
+          // Mark cells
           selected.forEach(pos => {
             const cell = getCell(pos);
             cell.classList.remove('selected');
             cell.classList.add('found');
             if (isSpangram) cell.classList.add('spangram');
           });
+
+          // Store path to redraw
+          foundPaths.push({
+            path: path.map(([x, y]) => `${y},${x}`),
+            color: isSpangram ? '#fbcb2c' : '#aedfee'
+          });
+
           foundWords.push(word);
           showLastWord(word + (isSpangram ? " (Spangram!)" : ""));
           updateCounter();
+          drawLines();
+
           if (foundWords.length === totalWords) launchConfetti();
         }
+
 
         clearSelection();
       }

@@ -20,12 +20,15 @@ social:
   twitter: 
     visibility: false
     handle: fcomlop
-  scholar: 
-    visibility: true
-    handle: pNDeaeQAAAAJ
   orcid: 
     visibility: true
     handle: 0000-0002-9653-1740
+  scholar: 
+    visibility: true
+    handle: pNDeaeQAAAAJ
+  cv: 
+    visibility: true
+    handle: assets/pdf/FranciscoMLopez.pdf
 
 # Collections
 collections:
@@ -54,12 +57,10 @@ collections:
 navigation:
 - title: About
   url: /
-# - title: Projects
-#   url: /projects/
 - title: Publications
   url: /publications
-- title: CV
-  url: assets/pdf/cv.pdf
+# - title: Projects
+#   url: /projects/
 - title: Strands
   url: /strands
 - title: Contact

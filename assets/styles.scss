@@ -607,5 +607,11 @@ textarea {
     text-decoration: none;
 }
 
+
 .imageflex { display: flex; }
 .imageflexcontent { margin-left: 5px; margin-top: 0; }
+
+@media (max-width: 768px) {
+    .imageflex { display: block; }
+    .imageflexcontent {margin: 0 0;}
+}
