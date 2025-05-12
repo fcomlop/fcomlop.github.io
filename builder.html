@@ -1,0 +1,272 @@
+---
+layout: game
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Strands Builder</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+      background: #f9f9f9;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    #grid-container {
+      position: relative;
+      width: fit-content;
+      margin: 20px auto;
+    }
+
+    #grid {
+      display: grid;
+      grid-template-columns: repeat(6, 50px);
+      grid-template-rows: repeat(8, 50px);
+      gap: 3px;
+    }
+
+    .cell {
+      background: white;
+      border: 1px solid #aaa;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      text-transform: uppercase;
+      outline: none;
+      caret-color: transparent;
+    }
+
+    .cell.selected {
+      background: #cce5ff;
+    }
+
+    #lineCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    input[type="text"], button {
+      padding: 6px;
+      font-size: 14px;
+      margin: 5px 0;
+    }
+
+    .word-list {
+      margin-top: 10px;
+    }
+
+    .word-item {
+      margin: 5px 0;
+    }
+
+    .spangram-label {
+      color: #e67e22;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 200px;
+      margin-top: 10px;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🧩 Strands Puzzle Builder</h1>
+
+<label>Theme: <input type="text" id="themeInput"></label><br>
+<label>Author: <input type="text" id="authorInput"></label><br>
+
+<div id="grid-container">
+  <canvas id="lineCanvas" width="318" height="426"></canvas>
+  <div id="grid"></div>
+</div>
+
+<label>
+  Word Label:
+  <input type="text" id="wordInput">
+  <button onclick="addWord()">Add Word</button>
+</label>
+
+<div class="word-list" id="wordList"></div>
+
+<button onclick="exportJSON()">📤 Download JSON</button>
+
+<script>
+  const rows = 8;
+  const cols = 6;
+  const grid = document.getElementById('grid');
+  const canvas = document.getElementById('lineCanvas');
+  const ctx = canvas.getContext('2d');
+  const selectedPath = [];
+  const visited = new Set();
+  const cells = [];
+  const wordList = [];
+
+  let isDragging = false;
+
+  // Create grid
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      const input = document.createElement('input');
+      input.className = 'cell';
+      input.setAttribute('maxlength', 1);
+      input.dataset.pos = `${y},${x}`;
+      input.addEventListener('input', (e) => {
+        input.value = input.value.toUpperCase().replace(/[^A-Z]/g, '');
+      });
+      input.addEventListener('mousedown', () => startSelection(input));
+      input.addEventListener('mouseenter', () => { if (isDragging) continueSelection(input); });
+      grid.appendChild(input);
+      cells.push(input);
+    }
+  }
+
+  document.addEventListener('mouseup', () => {
+    isDragging = false;
+  });
+
+  function startSelection(cell) {
+    clearSelection();
+    isDragging = true;
+    selectCell(cell);
+  }
+
+  function continueSelection(cell) {
+    const pos = cell.dataset.pos;
+    if (!visited.has(pos)) selectCell(cell);
+  }
+
+  function selectCell(cell) {
+    const pos = cell.dataset.pos;
+    visited.add(pos);
+    selectedPath.push(pos);
+    cell.classList.add('selected');
+    drawLines();
+  }
+
+  function clearSelection() {
+    selectedPath.length = 0;
+    visited.clear();
+    cells.forEach(c => c.classList.remove('selected'));
+    drawLines();
+  }
+
+  function drawLines() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (selectedPath.length < 2) return;
+    const rect = grid.getBoundingClientRect();
+    ctx.strokeStyle = "#007bff";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    selectedPath.forEach((pos, i) => {
+      const [y, x] = pos.split(',').map(Number);
+      const cell = cells.find(c => c.dataset.pos === `${y},${x}`);
+      const r = cell.getBoundingClientRect();
+      const cx = r.left + r.width / 2 - rect.left;
+      const cy = r.top + r.height / 2 - rect.top;
+      if (i === 0) ctx.moveTo(cx, cy);
+      else ctx.lineTo(cx, cy);
+    });
+    ctx.stroke();
+  }
+
+  function addWord() {
+    const label = document.getElementById('wordInput').value.trim().toUpperCase();
+    if (!label || selectedPath.length === 0) {
+      alert("Please enter a word and select cells.");
+      return;
+    }
+
+    wordList.push({
+      word: label,
+      path: [...selectedPath],
+      spangram: false
+    });
+
+    renderWordList();
+    clearSelection();
+    document.getElementById('wordInput').value = '';
+  }
+
+  function renderWordList() {
+    const container = document.getElementById('wordList');
+    container.innerHTML = '';
+    wordList.forEach((w, i) => {
+      const div = document.createElement('div');
+      div.className = 'word-item';
+      div.innerHTML = `
+        <strong>${w.word}</strong>
+        <button onclick="toggleSpangram(${i})">⭐</button>
+        <button onclick="removeWord(${i})">🗑️</button>
+        ${w.spangram ? '<span class="spangram-label">(Spangram)</span>' : ''}
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  function toggleSpangram(index) {
+    wordList.forEach((w, i) => w.spangram = i === index);
+    renderWordList();
+  }
+
+  function removeWord(index) {
+    wordList.splice(index, 1);
+    renderWordList();
+  }
+
+  function exportJSON() {
+    const letters = [];
+    for (let y = 0; y < rows; y++) {
+      let row = '';
+      for (let x = 0; x < cols; x++) {
+        const input = cells.find(c => c.dataset.pos === `${y},${x}`);
+        row += input.value.toUpperCase().charAt(0) || 'A';
+      }
+      letters.push(row);
+    }
+
+    const bonds = wordList.map(w => {
+      const path = w.path.map(p => {
+        const [y, x] = p.split(',').map(Number);
+        const flippedY = rows - 1 - y;
+        return `${x},${flippedY}`;
+      });
+      const entry = [w.word, path];
+      if (w.spangram) entry.push(true);
+      return entry;
+    });
+
+    const data = {
+      theme: document.getElementById('themeInput').value.trim(),
+      author: document.getElementById('authorInput').value.trim(),
+      letters,
+      bonds
+    };
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${data.theme || 'strand'}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+</script>
+
+</body>
+</html>

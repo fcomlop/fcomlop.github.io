@@ -3,10 +3,6 @@ layout: default
 permalink: "/strands"
 ---
 
-## Strands
-
-<br>
-
 ### How to play
 
 <div class="imageflex">
@@ -28,7 +24,23 @@ Click the titles below to play.
 
 <br>
 
-[Mattern et al. (2022, ICDL). MIMo: A Multi-Modal Infant Model for Studying Cognitive Development in Humans and AIs](../strand.html?puzzle=assets/strands/mimo.json)
+[Kauffmann et al. (2024, Nature Machine Intelligence) Explaniable AI reveals Clever Hans effects in unsupervised learning models](../strand.html?puzzle=assets/strands/clever-hans.json&paper=https://doi.org/10.1038/s42256-025-01000-2)
+
+<br>
+
+[López & Triesch (2025, ESANN) Hierarchical Residuals Exploit Brain-Inspired Compositionality](../strand.html?puzzle=assets/strands/hiresnet.json&paper=https://arxiv.org/abs/2502.16003)
+
+<br>
+
+[López et al. (2024, IMOL @ NeurIPS) Prioritizing Compression Explains Human Perceptual Preferences](../strand.html?puzzle=assets/strands/prl.json&paper=https://openreview.net/forum?id=3mLfmGidUv)
+
+<br>
+
+[López & Pomi (2024, Cognitive Neurodynamics) Inhibitory dynamics in dual-route evidence accumulation account for response time distributions from conflict tasks](../strand.html?puzzle=assets/strands/dream.json&paper=https://doi.org/10.1007/s11571-023-09990-8) 
+
+<br>
+
+[Mattern et al. (2022, ICDL) MIMo: A Multi-Modal Infant Model for Studying Cognitive Development in Humans and AIs](../strand.html?puzzle=assets/strands/mimo.json&paper=https://doi.org/10.1109/ICDL53763.2022.9962192)
 
 <br>
 

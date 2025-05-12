@@ -3,15 +3,13 @@ layout: publications
 permalink: "/publications"
 ---
 
-## Publications
-
 Please visit my [Google Scholar](https://scholar.google.com/citations?user=pNDeaeQAAAAJ) page for an up-to-date list of my publications.
 
 <!-- 
 TEMPLATE:
 APA citation: authors (year). Title. *Journal* (pages). Editor.
 
-[doi](url) · [bibtex](link_to_file) · [pdf](link_to_file) · [code](url) · [strands](../strand.html?puzzle=assets/strands/puzzle-name.json)
+[doi](url){:target="_blank"} · [bibtex](../assets/bibtex/){:target="_blank"} · [pdf](../assets/pdf/){:target="_blank"} · [code](url){:target="_blank"} · [strands](../strand.html?puzzle=assets/strands/puzzle-name.json&paper=url-of-paper)
 -->
 
 <br>
@@ -30,9 +28,13 @@ APA citation: authors (year). Title. *Journal* (pages). Editor.
 
 **López, F. M.**, & Triesch, J. (2025). Hierarchical Residuals Exploit Brain‑Inspired Compositionality. In *2025 European Symposium on Artificial Neural Networks, Computational Intelligence and Machine Learning (ESANN)*.
 
+[arxiv](https://arxiv.org/abs/2502.16003){:target="_blank"} · [bibtex](../assets/bibtex/lopez2025hierarchical){:target="_blank"} · [pdf](../assets/pdf/lopez2025hierarchical.pdf){:target="_blank"} · [strands](../strand.html?puzzle=assets/strands/hiresnet.json&paper=https://arxiv.org/abs/2502.16003)
+
 <br>
 
 Faßbender, L., Falck, J., **López, F. M.**, Shing, Y. L., Triesch, J., & Schwarzer, G. (2025). A comparison of force adaptation in toddlers and adults during a drawer opening task. *Scientific Reports*, 15(1), 3699.
+
+[doi](https://doi.org/10.1038/s41598-025-87441-6){:target="_blank"} · [bibtex](../assets/bibtex/fassbender2025comparison){:target="_blank"} · [pdf](../assets/pdf/fassbender2025comparison.pdf){:target="_blank"}
 
 <br>
 
@@ -41,6 +43,8 @@ Faßbender, L., Falck, J., **López, F. M.**, Shing, Y. L., Triesch, J., & Schwa
 <br>
 
 **López, F. M.**, Shi, B. E., & Triesch, J. (2024) Prioritizing Compression Explains Human Perceptual Preferences. In *Intrinsically‑Motivated and Open‑Ended Learning Workshop @ NeurIPS2024*.
+
+[arxiv](https://openreview.net/forum?id=3mLfmGidUv){:target="_blank"} · [bibtex](../assets/bibtex/lopez2024prioritizing){:target="_blank"} · [pdf](../assets/pdf/lopez2024prioritizing){:target="_blank"} · [strands](../strand.html?puzzle=assets/strands/prl.json&https://openreview.net/forum?id=3mLfmGidUv)
 
 <br>
 
@@ -86,16 +90,16 @@ Raabe, M. C., **López, F. M.**, Yu, Z., Caplan, S., Yu, C., Shi, B. E., & Tries
 
 Mattern, D., **López, F. M.**, Ernst, M. R., Aubret, A., & Triesch, J. (2022). MIMo: A Multi-Modal Infant Model for Studying Cognitive Development in Humans and AIs. In *2022 IEEE International Conference on Development and Learning (ICDL)* (pp. 23-29). IEEE.
 
-[doi](https://doi.org/10.1109/ICDL53763.2022.9962192) · [bibtex](../assets/bibtex/mattern2022mimo) · [pdf](../assets/pdf/mattern2022mimo.pdf) · [code](https://github.com/trieschlab/MIMo) · [strands](../strand.html?puzzle=assets/strands/mimo.json&paper=https://doi.org/10.1109/ICDL53763.2022.9962192)
+[doi](https://doi.org/10.1109/ICDL53763.2022.9962192){:target="_blank"} · [bibtex](../assets/bibtex/mattern2022mimo){:target="_blank"} · [pdf](../assets/pdf/mattern2022mimo.pdf){:target="_blank"} · [code](https://github.com/trieschlab/MIMo) · [strands](../strand.html?puzzle=assets/strands/mimo.json&paper=https://doi.org/10.1109/ICDL53763.2022.9962192)
 
 <br>
 
 **López, F. M.**, & Pomi, A. (2022). A neurocomputational model for the processing of conflicting information in context-dependent decision tasks. *Journal of Biological Physics*, 48(2), 195-213.
 
-[doi](https://doi.org/10.1007/s10867-021-09601-9) · [bibtex](../assets/bibtex/lopez2022neurocomputational) · [pdf](../assets/pdf/lopez2022neurocomputational.pdf)
+[doi](https://doi.org/10.1007/s10867-021-09601-9{:target="_blank"}) · [bibtex](../assets/bibtex/lopez2022neurocomputational){:target="_blank"} · [pdf](../assets/pdf/lopez2022neurocomputational.pdf){:target="_blank"} 
 
 <br>
 
 **López, F. M.**, De León, D., Díaz-Simón, N., & Maiche, A. (2022). Development of Mathematical Cognition: The Role of Technology in Low-SES Populations. In *Cognitive Sciences and Education in Non-WEIRD Populations: A Latin American Perspective* (pp. 169-184). Springer International Publishing.
 
-[doi](https://doi.org/10.1007/978-3-031-06908-6_11) · [bibtex](../assets/bibtex/lopez2022development) · [pdf](../assets/pdf/lopez2022development.pdf)
+[doi](https://doi.org/10.1007/978-3-031-06908-6_11){:target="_blank"} · [bibtex](../assets/bibtex/lopez2022development){:target="_blank"} · [pdf](../assets/pdf/lopez2022development.pdf){:target="_blank"}{:target="_blank"}

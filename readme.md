@@ -4,7 +4,7 @@ To maintain it:
 - Projects: upload new projects to the _posts directory.
 - Publications: edit the `publications.md` file.
 - Updates: edit the `updates.md` file.
-- Strands: create a new board using [Strandstudio](https://strandstudio.thegoodboi.net/make) and export the board as a JSON file. Modify the title and author attributes as needed, and place it in the `assets/strands` directory. The games will be available at `https://fcomlop.github.io/strand.html?puzzle=assets/strands/puzzle-name.json`. Add a link to it in the  `strands.md` file. 
+- Strands: create a new board using [Strandstudio](https://strandstudio.thegoodboi.net/make) and export the board as a JSON file. Modify the title and author attributes as needed, and place it in the `assets/strands` directory. The games will be available at `https://fcomlop.github.io/strand.html?puzzle=assets/strands/puzzle-name.json&paper=url-of-paper`. Add a link to it in the  `strands.md` file. 
 
 Below is the original README of the Academic Portfolio template.
 

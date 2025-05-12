@@ -89,12 +89,13 @@ layout: game
 
 <h2 id="themeTitle">Strands</h2>
 <p id="authorName"></p>
-<p id="counter">Found: 0 / 0</p>
-<p id="lastWord"></p>
 
 <div class="grid" id="grid">
   <canvas id="lineCanvas"></canvas>
 </div>
+
+<p id="counter">Found: 0 / 0</p>
+<p id="lastWord"></p>
 
 <p id="paperHint" style="margin-top: 15px; font-size: 16px;"></p>
 
@@ -129,8 +130,7 @@ layout: game
       const lastWordDisplay = document.getElementById('lastWord');
       const lineCanvas = document.getElementById('lineCanvas');
       const ctx = lineCanvas.getContext('2d');
-      const totalWords = bonds.length;
-
+      
       // Normalize bonds
       bonds = bonds.map(([word, rawPath, isSpangram]) => {
         const path = rawPath.map(pos => {
@@ -141,6 +141,7 @@ layout: game
         return [word, path, isSpangram];
       });
 
+      const totalWords = bonds.length;
       const selected = [];
       const visited = new Set();
       const cells = [];
@@ -148,10 +149,10 @@ layout: game
       const foundWords = [];
       const foundPaths = [];
 
-
       function updateCounter() {
         counterDisplay.textContent = `Found: ${foundWords.length} / ${totalWords}`;
       }
+      updateCounter();
 
       function showLastWord(word) {
         lastWordDisplay.textContent = word;
@@ -169,7 +170,7 @@ layout: game
         // Draw found word paths
         for (const { path, color } of foundPaths) {
           ctx.strokeStyle = color;
-          ctx.lineWidth = 4;
+          ctx.lineWidth = 8;
           ctx.beginPath();
           path.forEach((pos, i) => {
             const cell = getCell(pos);
@@ -185,7 +186,7 @@ layout: game
         // Draw current selection
         if (selected.length >= 2) {
           ctx.strokeStyle = "#bebebe";
-          ctx.lineWidth = 3;
+          ctx.lineWidth = 8;
           ctx.beginPath();
           selected.forEach((pos, i) => {
             const cell = getCell(pos);
@@ -267,13 +268,31 @@ layout: game
 
       function selectCell(cell) {
         const pos = cell.dataset.pos;
-        if (!visited.has(pos) && !cell.classList.contains('found')) {
-          cell.classList.add('selected');
-          visited.add(pos);
-          selected.push(pos);
+
+        // If the cell was already selected and it's part of the current path:
+        const index = selected.indexOf(pos);
+        if (index !== -1 && index < selected.length - 1) {
+          // User dragged back: remove all letters after this one
+          for (let i = selected.length - 1; i > index; i--) {
+            const removedPos = selected.pop();
+            visited.delete(removedPos);
+            const removedCell = getCell(removedPos);
+            removedCell.classList.remove('selected');
+          }
           drawLines();
+          return;
         }
+
+        // Prevent reselecting found words or reselecting within path
+        if (visited.has(pos) || cell.classList.contains('found')) return;
+
+        cell.classList.add('selected');
+        visited.add(pos);
+        selected.push(pos);
+        drawLines();
       }
+
+
 
       function clearSelection() {
         cells.forEach(c => c.classList.remove('selected'));
