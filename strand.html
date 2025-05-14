@@ -25,7 +25,7 @@ layout: game
     }
 
     .cell {
-      border: 1px solid #aaa;
+      border: 1px solid white;
       background-color: white;
       display: flex;
       align-items: center;
@@ -170,7 +170,7 @@ layout: game
         // Draw found word paths
         for (const { path, color } of foundPaths) {
           ctx.strokeStyle = color;
-          ctx.lineWidth = 8;
+          ctx.lineWidth = 16;
           ctx.beginPath();
           path.forEach((pos, i) => {
             const cell = getCell(pos);
@@ -186,7 +186,7 @@ layout: game
         // Draw current selection
         if (selected.length >= 2) {
           ctx.strokeStyle = "#bebebe";
-          ctx.lineWidth = 8;
+          ctx.lineWidth = 16;
           ctx.beginPath();
           selected.forEach((pos, i) => {
             const cell = getCell(pos);
